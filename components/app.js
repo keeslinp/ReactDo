@@ -1,13 +1,15 @@
+var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 
 var ToDoApp = React.createClass({
   addItem: function(item){
     var dat = this.state.data;
-    dat.push(item);
+    dat.push({id:guid(),text:item});
     this.setState({data:dat});
   },
   removeItem: function(item){
     var dat = this.state.data;
-    data.splice(item,1)
+    dat.splice(item,1);
+    this.setState({data:dat});
   },
   getInitialState: function(){
     return{data:this.props.data};
@@ -25,7 +27,7 @@ var ToDoApp = React.createClass({
 
 var ToDoList = React.createClass({
   completeTask: function(id){
-    this.setState({msg:'"'+this.props.data[id]+ '"' + " completed!"});
+    this.setState({msg:'"'+this.props.data[id].text+ '"' + " completed!"});
     this.props.complete(id);
   },
   getInitialState: function(){
@@ -35,11 +37,13 @@ var ToDoList = React.createClass({
     var rows = []
     for(var i =0;i<this.props.data.length;i++)
     {
-      rows.push(<ToDoItem key = {i} id = {i} complete = {this.completeTask} task={this.props.data[i]}/>);
+      rows.push(<ToDoItem key = {this.props.data[i].id} id = {i} complete = {this.completeTask} task={this.props.data[i].text}/>);
     }
     return(
       <div className = "ToDoList">
-        {rows}
+        <ReactCSSTransitionGroup transitionName = "task" transitionEnterTimeout={1000} transitionLeaveTimeout={1000}>
+          {rows}
+        </ReactCSSTransitionGroup>
         <br /> {this.state.msg} <br />
       </div>
     );
@@ -90,7 +94,26 @@ var AddToDo = React.createClass({
 
 var data = ["Get the laundry","take out the trash","Comb your hair!", "Walk the dog"]
 
+function addIDs(data){
+  var dat = [];
+  for(var item in data)
+  {
+    dat.push({id:guid(),text:data[item]});
+  }
+  return dat;
+}
+
+function guid() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+  }
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+    s4() + '-' + s4() + s4() + s4();
+}
+
 ReactDOM.render(
-  <ToDoApp data = {data} />,
+  <ToDoApp data = {addIDs(data)} />,
   document.getElementById('content')
 );

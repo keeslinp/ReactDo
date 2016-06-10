@@ -1,0 +1,15 @@
+.task-enter {
+ opacity: 0.01;
+ }
+.task-enter.task-enter-active {
+ opacity: 1;
+ transition: opacity 1s ease-in;
+ }
+
+ .task-leave {
+   opacity: 1;
+ }
+ .task-leave.task-leave-active{
+   opacity: 0;
+   transition: opacity 1s ease-out;
+ }
